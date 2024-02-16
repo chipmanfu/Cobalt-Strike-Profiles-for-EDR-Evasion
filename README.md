@@ -19,7 +19,7 @@ BeaconEye also fails to find the malicious process with the sleeping Beacon:
 While it bypassed the memory scanners, cross-referencing the memory regions, we find that it leads us straight to the beacon payload in memory.
 
 <h2 align="center"></h2>
-<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/3.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/3.jpg" 
 <p align="center">
 
 This demonstrates that, since the beacon was where the API call originated, execution will return there once the WaitForSingleObjectEx function is finished. The reference to a memory address rather than an exported function is a red flag. Both automatic tooling and manual analysis can detect this.
@@ -32,7 +32,7 @@ It is highly recommended to enable “stack spoof” using the Artifact Kit in o
 During the compilation, a .CNA file will be generated and that has to be imported in Cobalt Strike. Once imported, the changes are applied to the new generated payloads. Let’s analyze the Beacon again:
 
 <h2 align="center"></h2>
-<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/5.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/5.jpg" 
 <p align="center">
 
 The difference is very noticeable. The thread stacks are spoofed, leaving no trace of memory address references.
@@ -45,23 +45,23 @@ set obfuscate "true";
 Once the profile is applied to Cobalt Strike, generate a raw shellcode and put it in the Shellcode loader’s code. Once the EXE was compiled, we analyzed the differences in the stored strings:
 
 <h2 align="center"></h2>
-<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/6.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/6.jpg" 
 <p align="center">
 
 <h2 align="center"></h2>
-<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/7.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/7.jpg" 
 <p align="center">
 
 During many test cases we realized that the beacon still gets detected even if it is using heavy-customized profiles (including obfuscate). Using ThreadCheck we realized that msvcrt string is being identified as “bad bytes”:
 
 <h2 align="center"></h2>
-<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/8.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/8.jpg" 
 <p align="center">
 
 This is indeed a string found in Beacon’s heap. The obfuscate option isn’t fully removing every possible string:
 
 <h2 align="center"></h2>
-<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/9.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/9.jpg" 
 <p align="center">
 
 So let’s slightly modify our profile to remove such suspicious strings:
