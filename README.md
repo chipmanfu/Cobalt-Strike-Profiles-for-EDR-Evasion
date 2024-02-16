@@ -308,13 +308,13 @@ We can confirm that this exists on our shellcode:
 To workaround this rule, we first have to analyze the shellcode in x64dbg. We set a breakpoint on and eax,0xFFFFFF (the flagged instructions by YARA). In the bottom-right corner of the video you can see that when performing the operations, the zero flag (ZF) is set to 1, thus not taking the jump (JNE instruction):
 
 <h2 align="center"></h2>
-<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/Screencast-from-24.webm" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/Screencast-from-24.gif" 
 <p align="center">
 
 We changed the instruction and eax,0xFFFFFF to mov eax,0xFFFFFF (since these two instructions are almost identical) and you can still see that when executed, the zero flag is still set to 1:
 
 <h2 align="center"></h2>
-<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/Screencast-from-25.webm" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/Screencast-from-25.gif" 
 <p align="center">
 
 Scanning the new generated binary with YARA leads to no detection (both static and in-memory):
