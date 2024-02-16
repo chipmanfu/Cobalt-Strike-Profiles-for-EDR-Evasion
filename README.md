@@ -55,13 +55,13 @@ Once the profile is applied to Cobalt Strike, generate a raw shellcode and put i
 During many test cases we realized that the beacon still gets detected even if it is using heavy-customized profiles (including obfuscate). Using ThreadCheck we realized that msvcrt string is being identified as “bad bytes”:
 
 <h2 align="center"></h2>
-<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/8.jpg" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/8.png" 
 <p align="center">
 
 This is indeed a string found in Beacon’s heap. The obfuscate option isn’t fully removing every possible string:
 
 <h2 align="center"></h2>
-<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/9.jpg" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/9.png" 
 <p align="center">
 
 So let’s slightly modify our profile to remove such suspicious strings:
