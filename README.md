@@ -7,32 +7,32 @@ set sleep_mask "true";
 By enabling this option, Cobalt Strike will XOR the heap and every image section of its beacon prior to sleeping, leaving no string or data unprotected in the beacon’s memory. As a result, no detection is made by any of the mentioned tools.
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/1.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/1.png" 
 <p align="center">
 
 BeaconEye also fails to find the malicious process with the sleeping Beacon:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/2.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/2.png" 
 <p align="center">
 
 While it bypassed the memory scanners, cross-referencing the memory regions, we find that it leads us straight to the beacon payload in memory.
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/3.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/3.png" 
 <p align="center">
 
 This demonstrates that, since the beacon was where the API call originated, execution will return there once the WaitForSingleObjectEx function is finished. The reference to a memory address rather than an exported function is a red flag. Both automatic tooling and manual analysis can detect this.
 It is highly recommended to enable “stack spoof” using the Artifact Kit in order to prevent such IOC. It is worthwhile to enable this option even though it is not a part of the malleable profile. The spoofing mechanism must be enabled by setting the fifth argument to true:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/4.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/4.png" 
 <p align="center">
 
 During the compilation, a .CNA file will be generated and that has to be imported in Cobalt Strike. Once imported, the changes are applied to the new generated payloads. Let’s analyze the Beacon again:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/5.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/5.png" 
 <p align="center">
 
 The difference is very noticeable. The thread stacks are spoofed, leaving no trace of memory address references.
@@ -45,23 +45,23 @@ set obfuscate "true";
 Once the profile is applied to Cobalt Strike, generate a raw shellcode and put it in the Shellcode loader’s code. Once the EXE was compiled, we analyzed the differences in the stored strings:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/6.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/6.png" 
 <p align="center">
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/7.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/7.png" 
 <p align="center">
 
 During many test cases we realized that the beacon still gets detected even if it is using heavy-customized profiles (including obfuscate). Using ThreadCheck we realized that msvcrt string is being identified as “bad bytes”:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/8.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/8.png" 
 <p align="center">
 
 This is indeed a string found in Beacon’s heap. The obfuscate option isn’t fully removing every possible string:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/9.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/9.png" 
 <p align="center">
 
 So let’s slightly modify our profile to remove such suspicious strings:
@@ -80,19 +80,19 @@ Different compilers have their own set of optimizations and flags that can be us
 For example, Clang++ provides several optimization flags that can help reduce the size of the compiled code, while GCC (G++) is known for its high-performance optimization capabilities. By using different compilers, users can achieve a unique executable that can evade detection:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/10.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/10.png" 
 <p align="center">
 
 The string msvcrt.dll is not shown anymore, resulting in Windows Defender being bypassed:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/11.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/11.png" 
 <p align="center">
 
 Testing it against various Antivirus products leads to some promising results (bear in mind that an unencrypted shellcode was used):
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/12.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/12.png" 
 <p align="center">
 
 ## Removing strings is never enough
@@ -100,7 +100,7 @@ Testing it against various Antivirus products leads to some promising results (b
 Although having obfuscate enabled in our profile, we were still able to detect lots of strings inside the beacon’s stack:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/13.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/13.png" 
 <p align="center">
 
 We modified the profile a little by adding the following options to remove all the mentioned strings:
@@ -209,7 +209,7 @@ print(formatted_string)
 When generating the raw shellcode again with the changed profile, you will notice the prepended bytes (all the bytes before MZ header):
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/14.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/14.png" 
 <p align="center">
 
 ## The “Millionaire” Header
@@ -244,7 +244,7 @@ stage {
 Note: The length of Rich Header has to be 4-byte aligned, otherwise you will get this OPSEC warning:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/15.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/15.png" 
 <p align="center">
 
 OPSEC Warning: To make the Rich Header look more legit, you can convert a real DLL and convert it to a shellcode format.
@@ -258,25 +258,25 @@ To generate the sleepmask, we must provide arguments. If you are using the lates
 bash build.sh 49 WaitForSingleObject true indirect output/folder/
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/16.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/16.png" 
 <p align="center">
 
 After loading the generated .CNA located in output/ we can scan our raw shellcode. Rule b54b94ac is bypassed, however, there are two more rules left to bypass.
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/17.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/17.png" 
 <p align="center">
 
 Let’s analyse what the rule Windows_Trojan_CobaltStrike_1787eef5 is:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/18.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/18.png" 
 <p align="center">
 
 By taking a brief look at the rule, we can clearly see that the rule is scanning for the PE headers such as 4D 5A (MZ header). We can confirm that our shellcode is indeed having the flagged bytes:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/19.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/19.png" 
 <p align="center">
 
 Fortunately Cobalt Strike has made it so much easier for us to modify the PE header by applying the following option to the profile:
@@ -284,43 +284,43 @@ set magic_mz_x64 "OOPS";
 The value can be anything as long as it is four characters long. Adding this option to our profile will make the beacon no longer detected by Windows_Trojan_CobaltStrike_1787eef5:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/20.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/20.png" 
 <p align="center">
 
 And we can see how the magic bytes are changed to what we put earlier on the raw shellcode:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/21.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/21.png" 
 <p align="center">
 
 Now let’s bypass the Windows_Trojan_CobaltStrike_f0b627fc (the hardest one). When disassembling the opcodes of the YARA rule, we get the following:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/22.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/22.png" 
 <p align="center">
 
 We can confirm that this exists on our shellcode:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/23.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/23.png" 
 <p align="center">
 
 To workaround this rule, we first have to analyze the shellcode in x64dbg. We set a breakpoint on and eax,0xFFFFFF (the flagged instructions by YARA). In the bottom-right corner of the video you can see that when performing the operations, the zero flag (ZF) is set to 1, thus not taking the jump (JNE instruction):
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/Screencast-from-24.webm" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/Screencast-from-24.webm" 
 <p align="center">
 
 We changed the instruction and eax,0xFFFFFF to mov eax,0xFFFFFF (since these two instructions are almost identical) and you can still see that when executed, the zero flag is still set to 1:
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/Screencast-from-25.webm" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/Screencast-from-25.webm" 
 <p align="center">
 
 Scanning the new generated binary with YARA leads to no detection (both static and in-memory):
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/26.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/26.png" 
 <p align="center">
 
 To fully automate the bytes replacement, we created a python script which generates the modified shellcode in a new binary file:
@@ -385,7 +385,7 @@ transform-x64 {
 We’ve added set magic_pe which changes the PE header magic bytes (and code that depends on these bytes) to something else. You can use whatever you want here, so long as it’s two characters. The prepend can be only NOPs instructions, but it is highly recommend to use a junk shellcode generated by our python script (which we explained on the previous sections of the blogpost). While it bypasses the static detection, it is obviously not good enough to bypass the runtime one.
 
 <h2 align="center"></h2>
-<img src="https://github.com/EvilGreys/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/27.png" 
+<img src="https://github.com/chipmanfu/Cobalt-Strike-Profiles-for-EDR-Evasion/blob/main/3img/27.png" 
 <p align="center">
 
 In order to bypass Sophos during the runtime execution, it is necessary to use all the options that are used on our reference profile plus our enhancements. This way we created a fully working beacon that bypasses Sophos EDR (remember that no encryption was used):
